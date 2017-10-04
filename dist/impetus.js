@@ -463,7 +463,7 @@
                 event.initCustomEvent(name, true, true, data);
             }
 
-            el.dispatchEvent(event);
+            sourceEl.dispatchEvent(event);
         }
     }
 
