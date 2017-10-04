@@ -196,6 +196,8 @@ export default class Impetus {
                 document.addEventListener('touchcancel', stopTracking);
                 document.addEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
                 document.addEventListener('mouseup', onUp);
+
+                fireEvent('impetus-start');
             }
         }
 
@@ -240,6 +242,8 @@ export default class Impetus {
             document.removeEventListener('touchcancel', stopTracking);
             document.removeEventListener('mouseup', onUp);
             document.removeEventListener('mousemove', onMove);
+
+            fireEvent('impetus-stop');
         }
 
         /**
@@ -433,6 +437,19 @@ export default class Impetus {
             } else {
                 decelerating = false;
             }
+        }
+
+        function fireEvent(name, data) {
+          data = data || {};
+
+          if (window.CustomEvent) {
+            var event = new CustomEvent(name, { detail: data });
+          } else {
+            var event = document.createEvent(name);
+            event.initCustomEvent(name, true, true, data);
+          }
+
+          el.dispatchEvent(event);
         }
     }
 }

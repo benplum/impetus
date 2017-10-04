@@ -215,6 +215,8 @@
                 document.addEventListener('touchcancel', stopTracking);
                 document.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
                 document.addEventListener('mouseup', onUp);
+
+                fireEvent('impetus-start');
             }
         }
 
@@ -259,6 +261,8 @@
             document.removeEventListener('touchcancel', stopTracking);
             document.removeEventListener('mouseup', onUp);
             document.removeEventListener('mousemove', onMove);
+
+            fireEvent('impetus-stop');
         }
 
         /**
@@ -447,6 +451,19 @@
             } else {
                 decelerating = false;
             }
+        }
+
+        function fireEvent(name, data) {
+            data = data || {};
+
+            if (window.CustomEvent) {
+                var event = new CustomEvent(name, { detail: data });
+            } else {
+                var event = document.createEvent(name);
+                event.initCustomEvent(name, true, true, data);
+            }
+
+            el.dispatchEvent(event);
         }
     }
 
